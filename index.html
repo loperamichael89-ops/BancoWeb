@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bancolombia | Sucursal Personas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b3939;
+            --accent: #000000;
+            --success: #25d366;
+            --danger: #ff4b5c;
+            --bg: #f8f9fc;
+            --sidebar-width: 260px;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-page {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #3b3939 0%, #4f5038 100%);
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn-main {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        /* --- MAIN DASHBOARD (RESPONSIVE) --- */
+        #main-app {
+            display: flex;
+            height: 100vh;
+            flex-direction: row;
+        }
+
+        /* Sidebar con Toggle para móvil */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        .logo-area {
+            font-weight: 800;
+            font-size: 1.4rem;
+            margin-bottom: 50px;
+            color: #fff;
+        }
+
+        .logo-area span {
+            color: var(--accent);
+        }
+
+        nav {
+            flex-grow: 1;
+        }
+
+        nav a {
+            color: #adb5bd;
+            text-decoration: none;
+            display: block;
+            padding: 15px 0;
+            font-weight: 600;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: white;
+        }
+
+        /* Mobile Header */
+        .mobile-bar {
+            display: none;
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Content Area */
+        main {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .balance-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            max-width: 400px;
+            border-left: 5px solid var(--accent);
+        }
+
+        .balance-val {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        /* Table Responsiveness */
+        .history {
+            margin-top: 40px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+            /* Permite scroll lateral en móvil */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        td,
+        th {
+            padding: 15px 10px;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        /* --- MEDIA QUERIES PARA CELULAR --- */
+        @media (max-width: 850px) {
+            #main-app {
+                flex-direction: column;
+            }
+
+            aside {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                height: 100vh;
+                width: 70%;
+            }
+
+            aside.active {
+                left: 0;
+            }
+
+            .mobile-bar {
+                display: flex;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            header {
+                text-align: center;
+                justify-content: center;
+            }
+
+            header div {
+                width: 100%;
+            }
+
+            .balance-card {
+                max-width: 100%;
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 25px;
+            }
+        }
+
+        /* Modal Centering */
+        #modal-transfer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        /* 🔵 OVERLAY PROCESANDO */
+        #overlay-procesando {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            color: white;
+            font-size: 1.5rem;
+            flex-direction: column;
+        }
+
+        .spinner {
+            border: 5px solid #ccc;
+            border-top: 5px solid #25d366;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 🟢 MENSAJE ÉXITO */
+        #toast-exito {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25d366;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 4000;
+        }
+    </style>
+</head>
+<!-- 🔵 OVERLAY -->
+<div id="overlay-procesando" class="hidden">
+    <div class="spinner"></div>
+    Procesando transferencia...
+</div>
+
+<!-- 🟢 MENSAJE -->
+<div id="toast-exito" class="hidden">
+    ✅ Transferencia exitosa
+</div>
+
+<body>
+
+    <div id="login-page">
+        <div class="login-card">
+            <div><img src="Bancolombia Logo SVG.svg" width="300px"></div>
+            <p>Iniciar Sesión</p>
+            <input type="text" id="user" placeholder="Correo: admin@motorparts.com">
+            <input type="password" id="pass" placeholder="Clave: 8899">
+            <button class="btn-main" onclick="validarLogin()">INGRESAR</button>
+        </div>
+    </div>
+
+    <div id="main-app" class="hidden">
+
+        <div class="mobile-bar">
+            <div><img src="Bancolombia Logo SVG.svg" width="200px"></div>
+            <button onclick="toggleMenu()"
+                style="background:none; border:none; color:white; font-size:1.5rem;">☰</button>
+        </div>
+
+        <aside id="sidebar">
+            <div style="background-color: #ffee00; width: 210px;height: 40px;padding-top: 20px;border-radius: 20px;"><img src="Bancolombia Logo SVG.svg" width="200px"></div>
+            <nav>
+                <a href="#" class="active" onclick="toggleMenu()">Resumen de Cuenta</a>
+                <!--<a href="#" onclick="toggleMenu()">Movimientos</a>-->
+                <a href="#" onclick="toggleMenu()">Seguridad</a>
+            </nav>
+            <button class="btn-logout" onclick="logout()">CERRAR SESIÓN</button>
+        </aside>
+
+        <main>
+            <header>
+                <div>
+                    <h2 style="margin:0;">Bienvenido</h2>
+                    <!-- <p style="color:#666; margin:5px 0;">ID: cedula</p> -->
+                </div>
+                <button class="btn-main" style="margin:0; width:auto; padding:12px 25px;" onclick="openTransfer()">NUEVA
+                    TRANSFERENCIA</button>
+            </header>
+
+            <div class="balance-card">
+                <h3>Saldo Disponible (COP)</h3>
+                <div class="balance-val" id="display-saldo">$100.000.000</div>
+                <span style="color:var(--success); font-size:0.8rem; font-weight:700;">● Cuenta Activa</span>
+            </div>
+
+            <div class="history">
+                <h3 style="margin:0 0 15px 0;">Movimientos Recientes</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DESCRIPCIÓN</th>
+                            <th>FECHA</th>
+                            <th>ESTADO</th>
+                            <th>MONTO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-movimientos">
+                    </tbody>
+                </table>
+
+            </div>
+        </main>
+
+    </div>
+
+    <div id="modal-transfer" class="hidden">
+        <div class="modal-content">
+            <h2 style="margin-top:0;">Envío de Fondos</h2>
+            <p style="color:#666; font-size:0.9rem;">Se descontará de su saldo principal.</p>
+
+            <label style="font-size: 0.8rem; font-weight: 700;">TARJETA DESTINO</label>
+            <input type="text" placeholder="XXXX XXXX XXXX 5588" maxlength="19">
+
+            <div style="display:flex; gap:10px;">
+                <input type="text" placeholder="MM/AA" maxlength="5">
+                <input type="password" placeholder="CVC" maxlength="3">
+            </div>
+
+            <label style="font-size: 0.8rem; font-weight: 700;">MONTO</label>
+            <input type="text" style="background:#f0f2f5;">
+
+            <button class="btn-main" style="background-color: #000000;" id="btn-confirmar"
+                onclick="ejecutarTransferencia()">CONFIRMAR</button>
+            <button class="btn-main" style="background:#eee; color:#333; margin-top:10px;"
+                onclick="closeTransfer()">CANCELAR</button>
+        </div>
+    </div>
+
+    <script>
+        const USUARIO_VALIDO = "admin@motorparts.com";
+        const CLAVE_VALIDA = "8899";
+        let saldoActual = 100000000;
+
+        function validarLogin() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if (u === USUARIO_VALIDO && p === CLAVE_VALIDA) {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+            } else {
+                alert("Credenciales incorrectas.");
+            }
+        }
+
+        function toggleMenu() {
+            if (window.innerWidth <= 850) {
+                document.getElementById('sidebar').classList.toggle('active');
+            }
+        }
+
+        function openTransfer() {
+            if (saldoActual <= 0) return alert("Sin fondos.");
+            document.getElementById('modal-transfer').classList.remove('hidden');
+        }
+
+        function closeTransfer() {
+            document.getElementById('modal-transfer').classList.add('hidden');
+        }
+
+        function ejecutarTransferencia() {
+            const btn = document.getElementById('btn-confirmar');
+            document.getElementById('overlay-procesando').classList.remove('hidden');
+            btn.disabled = true;
+
+            const inputs = document.querySelectorAll('#modal-transfer input');
+
+            const tarjeta = inputs[0].value.trim();
+            const montoInput = inputs[3].value.trim();
+
+            // 🔒 Validaciones
+            if (!tarjeta || tarjeta.length < 10) {
+                alert("Ingresa una tarjeta válida");
+                resetBtn(btn);
+                return;
+            }
+
+            if (!montoInput || isNaN(montoInput)) {
+                alert("Ingresa un monto válido");
+                resetBtn(btn);
+                return;
+            }
+
+            const monto = parseInt(montoInput);
+
+            if (monto <= 0) {
+                alert("El monto debe ser mayor a 0");
+                resetBtn(btn);
+                return;
+            }
+
+            if (monto > saldoActual) {
+                alert("Fondos insuficientes");
+                resetBtn(btn);
+                return;
+            }
+
+            setTimeout(() => {
+
+                // ocultar overlay
+                document.getElementById('overlay-procesando').classList.add('hidden');
+
+                // 💰 Restar saldo real
+                saldoActual -= monto;
+
+                document.getElementById('display-saldo').innerText =
+                    `$${saldoActual.toLocaleString()}`;
+
+                // 📊 Agregar movimiento
+                const tabla = document.getElementById('tabla-movimientos');
+                tabla.innerHTML = `<tr>
+        <td>Transferencia a ${tarjeta.slice(-4)}</td>
+        <td>${new Date().toLocaleDateString()}</td>
+        <td style="color:var(--success)">Enviado</td>
+        <td style="font-weight:700">-$${monto.toLocaleString()}</td>
+    </tr>` + tabla.innerHTML;
+
+                // 🟢 mostrar mensaje bonito
+                const toast = document.getElementById('toast-exito');
+                toast.classList.remove('hidden');
+
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 4000);
+
+                closeTransfer();
+                resetBtn(btn);
+
+            }, 1900);
+        }
+
+        // 🔧 helper para resetear botón
+        function resetBtn(btn) {
+            btn.innerText = "CONFIRMAR";
+            btn.disabled = false;
+        }
+
+        function logout() {
+            if (confirm("¿Cerrar sesión?")) location.reload();
+        }
+    </script>
+</body>
+
+</html>
