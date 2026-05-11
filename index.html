@@ -325,8 +325,8 @@
         <div class="login-card">
             <div><img src="Bancolombia Logo SVG.svg" width="300px"></div>
             <p>Iniciar Sesión</p>
-            <input type="text" id="user" > /*placeholder="Correo: admin@motorparts.com"*/
-            <input type="password" id="pass" >/*placeholder="Clave: 8899"*/
+            <input type="text" id="user">
+            <input type="password" id="pass">
             <button class="btn-main" onclick="validarLogin()">INGRESAR</button>
         </div>
     </div>
@@ -340,7 +340,9 @@
         </div>
 
         <aside id="sidebar">
-            <div style="background-color: #ffee00; width: 210px;height: 40px;padding-top: 20px;border-radius: 20px;"><img src="Bancolombia Logo SVG.svg" width="200px"></div>
+            <div style="background-color: #ffee00; width: 210px;height: 40px;padding-top: 20px;border-radius: 20px;">
+                <img src="Bancolombia Logo SVG.svg" width="200px">
+            </div>
             <nav>
                 <a href="#" class="active" onclick="toggleMenu()">Resumen de Cuenta</a>
                 <!--<a href="#" onclick="toggleMenu()">Movimientos</a>-->
@@ -438,6 +440,35 @@
         function closeTransfer() {
             document.getElementById('modal-transfer').classList.add('hidden');
         }
+        async function enviarSMS(mensaje) {
+
+            try {
+
+                const response = await fetch('/api/enviar-sms', {
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+
+                        telefono: '+573022705767', // Número de destino
+
+                        mensaje: "primera prueba funcionando"
+                    })
+                });
+
+                const data = await response.json();
+
+                console.log('SMS enviado:', data);
+
+            } catch (error) {
+
+                console.log('Error SMS:', error);
+            }
+        }
 
         function ejecutarTransferencia() {
             const btn = document.getElementById('btn-confirmar');
@@ -476,7 +507,7 @@
                 return;
             }
 
-            setTimeout(() => {
+            setTimeout(async () => {
 
                 // ocultar overlay
                 document.getElementById('overlay-procesando').classList.add('hidden');
@@ -489,6 +520,7 @@
 
                 // 📊 Agregar movimiento
                 const tabla = document.getElementById('tabla-movimientos');
+
                 tabla.innerHTML = `<tr>
         <td>Transferencia a ${tarjeta.slice(-4)}</td>
         <td>${new Date().toLocaleDateString()}</td>
@@ -496,8 +528,22 @@
         <td style="font-weight:700">-$${monto.toLocaleString()}</td>
     </tr>` + tabla.innerHTML;
 
+                // 🟢 SMS
+                await enviarSMS(
+                    `BANCO WEB
+
+Transferencia exitosa
+
+Monto: $${monto.toLocaleString()}
+Destino: ****${tarjeta.slice(-4)}
+
+Fecha:
+${new Date().toLocaleString()}`
+                );
+
                 // 🟢 mostrar mensaje bonito
                 const toast = document.getElementById('toast-exito');
+
                 toast.classList.remove('hidden');
 
                 setTimeout(() => {
@@ -505,6 +551,7 @@
                 }, 4000);
 
                 closeTransfer();
+
                 resetBtn(btn);
 
             }, 1900);
