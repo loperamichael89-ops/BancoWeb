@@ -1,20 +1,19 @@
 const twilio = require('twilio');
 
-const client = twilio(
-    process.env.TWILIO_SID,
-    process.env.TWILIO_TOKEN
-);
-
 module.exports = async (req, res) => {
 
-    if (req.method !== 'POST') {
+    console.log("BODY:", req.body);
 
-        return res.status(405).json({
-            error: 'Método no permitido'
-        });
-    }
+    console.log("SID:", process.env.TWILIO_SID);
+
+    console.log("PHONE:", process.env.TWILIO_PHONE);
 
     try {
+
+        const client = twilio(
+            process.env.TWILIO_SID,
+            process.env.TWILIO_TOKEN
+        );
 
         const { telefono, mensaje } = req.body;
 
@@ -28,18 +27,16 @@ module.exports = async (req, res) => {
         });
 
         return res.status(200).json({
-
             success: true,
-
             sid: response.sid
         });
 
     } catch (error) {
 
+        console.log("ERROR TWILIO:", error);
+
         return res.status(500).json({
-
             success: false,
-
             error: error.message
         });
     }
