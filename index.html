@@ -536,7 +536,7 @@
                 const cuentaOrigen = '6651'; // puedes cambiar esto si es dinámico
                 const cuentaDestino = tarjeta.replace(/\s/g, '');
                 await enviarSMS(
-                    `Transferencia: $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} de 6651 a *${cuentaDestino} el ${fechaFormateada} ${horaFormateada}.`
+                    `Transferencia: $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} de adriham a *${cuentaDestino} el ${fechaFormateada} ${horaFormateada}.`
                 );
 
                 // 🟠 SMS secundario después de 2 minutos indicando rechazo/rebote
