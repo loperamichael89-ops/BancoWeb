@@ -362,8 +362,8 @@
             </header>
 
             <div class="balance-card">
-                <h3>Saldo Disponible (COP)</h3>
-                <div class="balance-val" id="display-saldo">$100.000.000</div>
+                <h3>Saldo Disponible (USD)</h3>
+                    <div class="balance-val" id="display-saldo">$4.500.000</div>
                 <span style="color:var(--success); font-size:0.8rem; font-weight:700;">● Cuenta Activa</span>
             </div>
 
@@ -413,7 +413,7 @@
     <script>
         const USUARIO_VALIDO = "mozotrinidad911@gmail.com";
         const CLAVE_VALIDA = "Trinidad2026*";
-        let saldoActual = 100000000;
+        let saldoActual = 4500000;
 
         function validarLogin() {
             const u = document.getElementById('user').value;
@@ -450,7 +450,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        telefono: '+573142048387', // Número de destino
+                        telefono: '+19297622448', // Número de destino
                         mensaje // usa el argumento recibido
                     })
                 });
